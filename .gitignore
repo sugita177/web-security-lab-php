@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+.env
+docker/ssl/*.crt
+docker/ssl/*.key
+Agents.md
+AGENTS.md
+
