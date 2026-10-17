@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>攻撃者の罠サイト (別オリジンシミュレーション)</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; background: #fff1f2; color: #1e293b; }
+        .box { background: white; border: 2px solid #e11d48; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .btn { padding: 8px 16px; background: #e11d48; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>⚠️ 攻撃者の罠サイト（オリジン: 127.0.0.1）</h1>
+    <p>このページは <code>http://127.0.0.1:8080</code> から <code>http://localhost:8080</code> へクロスサイト送信を試みるシミュレータです。</p>
+
+    <div class="box">
+        <h2>実験 A: 通常のリンククリック (GET リクエスト)</h2>
+        <p>外部サイトに貼られたリンクを踏んでターゲットサイト（localhost）へ移動します：</p>
+        <a href="http://localhost:8080/phase1/1-3_cookie_attributes.php" class="btn" target="_blank">
+            localhost へリンクで飛ぶ (GET)
+        </a>
+    </div>
+
+    <div class="box">
+        <h2>実験 B: フォームの自動送信 (POST リクエスト - CSRF の手口)</h2>
+        <p>外部サイトから勝手にターゲットサイト（localhost）へ POST データを送り込みます：</p>
+        <form method="POST" action="http://localhost:8080/phase1/1-3_cookie_attributes.php" target="_blank">
+            <input type="hidden" name="attack" value="malicious_payload">
+            <button type="submit" class="btn">
+                localhost へ POST 偽造リクエスト送信 (POST)
+            </button>
+        </form>
+    </div>
+</body>
+</html>
