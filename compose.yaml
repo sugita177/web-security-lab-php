@@ -21,6 +21,18 @@ services:
     networks:
       - lab-network
 
+  # 【Phase 2-2 オンデマンド追加】攻撃者専用Webサーバー (別オリジン: ポート 8081)
+  attacker-site:
+    image: nginx:alpine
+    container_name: security-lab-attacker
+    ports:
+      - "8081:80"
+    volumes:
+      - ./docker/attacker:/usr/share/nginx/html:ro
+    networks:
+      - lab-network
+
 networks:
+
   lab-network:
     driver: bridge

