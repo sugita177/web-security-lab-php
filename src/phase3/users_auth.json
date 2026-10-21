@@ -1,0 +1,10 @@
+{
+    "alice": {
+        "type": "md5",
+        "password_hash": "482c811da5d5b4bc6d497ffa98491e38"
+    },
+    "bob": {
+        "type": "secure_hash",
+        "password_hash": "$2y$12$ZhZQENy6pcpJ47spCUPe.eU03P1LfZtJE55RM6ftCS108MEkjcPOu"
+    }
+}
