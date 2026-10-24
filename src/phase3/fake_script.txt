@@ -1,0 +1,2 @@
+alert('⚠️ XSS成立！\\n\\nContent-Type: text/plain のはずのテキストファイルが、ブラウザのMIMEスニッフィングによりJavaScriptとして実行されました！');
+console.log('MIME sniffing attack executed!');
