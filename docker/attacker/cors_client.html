@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>【ポート8081】別オリジンからの CORS 通信クライアント</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; background: #fdf2f8; color: #831843; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .origin-badge { display: inline-block; background: #db2777; color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        button { cursor: pointer; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; color: white; margin-right: 8px; margin-bottom: 8px; font-size: 0.95em; }
+        .btn-simple { background: #2563eb; }
+        .btn-cred { background: #7c3aed; }
+        .btn-preflight { background: #059669; }
+        pre { background: #1e293b; color: #f8fafc; padding: 12px; border-radius: 6px; overflow-x: auto; min-height: 80px; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>🌐 CORS クライアント画面</h2>
+            <span class="origin-badge">現在のオリジン: http://localhost:8081</span>
+        </div>
+        <p>このページから、JavaScript の <code>fetch()</code> を使って別オリジンである <strong>http://localhost:8080</strong> の API を呼び出します。</p>
+        <p><small style="color: #64748b;">※ F12キーでブラウザのデベロッパーツール（Console / Networkタブ）を開いて観察してください。</small></p>
+    </div>
+
+    <div class="card">
+        <h3>🚀 API 呼び出しテスト</h3>
+        <p>以下の3種類の通信を試して、ブラウザの挙動の違いを比較します：</p>
+
+        <div style="margin: 15px 0;">
+            <!-- テスト 1: 単純GETリクエスト -->
+            <button class="btn-simple" onclick="sendSimpleGet()">
+                ① 単純GETリクエスト (Cookieなし)
+            </button>
+
+            <!-- テスト 2: Cookie付きGETリクエスト -->
+            <button class="btn-cred" onclick="sendCredentialGet()">
+                ② Cookie付きGET (credentials: 'include')
+            </button>
+
+            <!-- テスト 3: プリフライト発生リクエスト -->
+            <button class="btn-preflight" onclick="sendPreflightPost()">
+                ③ プリフライト発生POST (JSON + カスタムヘッダー)
+            </button>
+        </div>
+
+        <h4>実行結果（JavaScriptが受け取ったレスポンス）:</h4>
+        <pre id="output">（ボタンを押すとここに結果が表示されます）</pre>
+    </div>
+
+    <div class="card">
+        <h3>🔗 標的APIサーバー側の状態確認</h3>
+        <p>標的APIサーバー（ポート 8080）の管理画面を別タブで開いて、サーバー側でリクエストが届いているか確認できます：</p>
+        <p>
+            👉 <a href="http://localhost:8080/phase4/4-1_cors_api.php" target="_blank" style="color: #2563eb; font-weight: bold;">
+                標的API管理画面を開く (http://localhost:8080/phase4/4-1_cors_api.php) ➔
+            </a>
+        </p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/phase4/4-1_cors_api.php';
+        const output = document.getElementById('output');
+
+        function log(msg) {
+            output.textContent = typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg;
+        }
+
+        // ① 単純GETリクエスト
+        async function sendSimpleGet() {
+            log('送信中: 単純GETリクエスト...');
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                log({ status: res.status, statusText: res.statusText, data });
+            } catch (err) {
+                log('❌ CORSエラー発生！\nブラウザによってレスポンスの読み取りがブロックされました。\n（Consoleタブのエラーを確認してください）\n\nエラー内容: ' + err.message);
+            }
+        }
+
+        // ② Cookie付きGETリクエスト
+        async function sendCredentialGet() {
+            log('送信中: Cookie付きGETリクエスト (credentials: include)...');
+            try {
+                const res = await fetch(API_URL, {
+                    credentials: 'include' // 標的サイトのセッションCookieを添えて送信
+                });
+                const data = await res.json();
+                log({ status: res.status, statusText: res.statusText, data });
+            } catch (err) {
+                log('❌ CORSエラー発生！\nCookie付き通信が許可されていないか、Origin: * になっているため拒絶されました。\n\nエラー内容: ' + err.message);
+            }
+        }
+
+        // ③ プリフライト（事前OPTIONS）が発生するリクエスト
+        async function sendPreflightPost() {
+            log('送信中: プリフライトPOST (JSON + X-Custom-Header)...');
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // 単純リクエストではない形式
+                        'X-Custom-Header': 'AttackPayload123' // カスタムヘッダー
+                    },
+                    body: JSON.stringify({ action: 'transfer_money', amount: 50000 })
+                });
+                const data = await res.json();
+                log({ status: res.status, statusText: res.statusText, data });
+            } catch (err) {
+                log('❌ CORSエラー発生！\n事前OPTIONS（プリフライト）が拒否されたため、本番POSTは送信すらされていません。\n\nエラー内容: ' + err.message);
+            }
+        }
+    </script>
+
+</body>
+</html>
