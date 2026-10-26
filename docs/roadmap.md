@@ -82,7 +82,7 @@ OWASP Top 10の常連であるコードレベルの脆弱性を、攻撃コー�
   - *【オンデマンド設定: Nginx SSL/TLS証明書設定】*
   - 平文HTTPでのパケット盗聴（Cookie/認証情報漏洩）の観察
   - HTTPS化と `Secure` 属性の強制、HSTS (`Strict-Transport-Security`) によるSSL Stripping攻撃耐性
-- **4-3. プロキシヘッダーと信頼性境界**
+- **4-3. プロキシヘッダーと信頼性境界** ✅ *完了*
   - `X-Forwarded-For`, `X-Real-IP`, `X-Forwarded-Proto` の仕組み
   - クライアント偽装によるIP制限バイパス攻撃の再現
   - Nginxの `set_real_ip_from` を用いた信頼できるプロキシの定義と境界防御
