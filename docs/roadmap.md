@@ -86,7 +86,7 @@ OWASP Top 10の常連であるコードレベルの脆弱性を、攻撃コー�
   - `X-Forwarded-For`, `X-Real-IP`, `X-Forwarded-Proto` の仕組み
   - クライアント偽装によるIP制限バイパス攻撃の再現
   - Nginxの `set_real_ip_from` を用いた信頼できるプロキシの定義と境界防御
-- **4-4. SSRF（Server-Side Request Forgery）**
+- **4-4. SSRF（Server-Side Request Forgery）** ✅ *完了*
   - 外部URLフェッチ機能（Webhook、画像プレビュー等）を悪用した内部ネットワーク探索・クラウドメタデータアクセス
   - DNS Rebinding対策、プライベートIP（RFC 1918 / Loopback）宛て通信の検証・遮断ロジック
 
